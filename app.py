@@ -10,7 +10,7 @@ from sklearn.metrics import classification_report, confusion_matrix, accuracy_sc
 from imblearn.over_sampling import SMOTE
 
 # --- CONFIGURACIÓN DE LA PÁGINA ---
-st.set_page_config(page_title="Práctica Redes Neuronales", page_icon="🧠", layout="wide")
+st.set_page_config(page_title="Práctica 4. Modelos de machine learning", page_icon="🤖", layout="wide")
 
 # --- ESTILO MINIMALISTA MODIFICADO ---
 # Se cambió el color de fondo y texto de las instrucciones para mejor contraste en tema oscuro/claro.
@@ -36,8 +36,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- CABECERA ---
-st.title("🧠 Práctica 4. Modelos de machine learning")
-st.markdown("**Alumno:** César Antonio Ix Sánchez")
+st.title(" 🤖 Práctica 4. Modelos de machine learning")
+st.markdown("**Alumno:** César Antonio Ix Sánchez. 66271")
 st.markdown("---")
 
 # --- NAVEGACIÓN MEDIANTE PESTAÑAS ---
