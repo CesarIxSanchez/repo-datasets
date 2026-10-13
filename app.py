@@ -122,7 +122,7 @@ with tab2:
         <b>Instrucciones de uso:</b><br>
         1. Verifica los datos comerciales de seguros médicos.<br>
         2. Presiona <b>"Entrenar y Procesar Modelo"</b> para que la red neuronal estime los costos ('charges').<br>
-        3. Revisa el error cuadrático y el coeficiente R2 obtenidos por el MLPRegressor.
+        3. Observa la gráfica de dispersión para comparar visualmente qué tan cerca están las estimaciones del modelo frente a las facturas médicas reales.
     </div>
     """, unsafe_allow_html=True)
 
