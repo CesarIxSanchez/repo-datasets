@@ -10,21 +10,33 @@ from sklearn.metrics import classification_report, confusion_matrix, accuracy_sc
 from imblearn.over_sampling import SMOTE
 
 # --- CONFIGURACIÓN DE LA PÁGINA ---
-st.set_page_config(page_title="Práctica 4. Modelos de machine learning", page_icon="🤖", layout="wide")
+st.set_page_config(page_title="Práctica Redes Neuronales", page_icon="🧠", layout="wide")
 
-# --- ESTILO MINIMALISTA ---
+# --- ESTILO MINIMALISTA MODIFICADO ---
+# Se cambió el color de fondo y texto de las instrucciones para mejor contraste en tema oscuro/claro.
 st.markdown("""
     <style>
-    .main {background-color: #f8f9fa;}
-    h1, h2, h3 {color: #2c3e50;}
     .stButton>button {background-color: #3498db; color: white; border-radius: 5px; border: none; padding: 10px 20px;}
     .stButton>button:hover {background-color: #2980b9;}
-    .instrucciones {background-color: #e8f4f8; padding: 15px; border-radius: 8px; border-left: 5px solid #3498db; margin-bottom: 20px;}
+    .instrucciones {
+        background-color: #1e3a5f; /* Azul marino oscuro */
+        color: #ffffff; /* Texto blanco puro */
+        padding: 15px; 
+        border-radius: 8px; 
+        border-left: 5px solid #00d2ff; /* Borde cyan brillante */
+        margin-bottom: 20px;
+        font-size: 1.05em;
+    }
+    .dataset-subtitle {
+        color: #888888;
+        font-style: italic;
+        margin-bottom: 15px;
+    }
     </style>
 """, unsafe_allow_html=True)
 
 # --- CABECERA ---
-st.title("🤖 Práctica 4. Modelos de machine learning")
+st.title("🧠 Práctica 4. Modelos de machine learning")
 st.markdown("**Alumno:** César Antonio Ix Sánchez")
 st.markdown("---")
 
@@ -35,14 +47,15 @@ tab1, tab2, tab3 = st.tabs(["1. Pattern Recognition (Clasificación)", "2. Fitti
 # PESTAÑA 1: PATTERN RECOGNITION (CLASIFICACIÓN)
 # ==========================================
 with tab1:
-    st.header("Mantenimiento Predictivo Industrial")
+    st.header("Pattern Recognition")
+    st.markdown("<div class='dataset-subtitle'>Dataset: predictive_maintenance_dataset.csv</div>", unsafe_allow_html=True)
     
     st.markdown("""
     <div class="instrucciones">
         <b>Instrucciones de uso:</b><br>
         1. Observa la vista previa del dataset industrial cargado desde GitHub.<br>
         2. Presiona el botón <b>"Entrenar y Procesar Modelo"</b>.<br>
-        3. El programa aplicará balanceo de clases (SMOTE), entrenará un Perceptrón Multicapa (MLP) y mostrará las métricas y la matriz de confusión.
+        3. El programa aplicará balanceo de clases (SMOTE), entrenará un Perceptrón Multicapa (MLP) y mostrará las métricas y la matriz de confusión. (Puede tardar entre 1 y 2 minutos).
     </div>
     """, unsafe_allow_html=True)
 
@@ -54,8 +67,8 @@ with tab1:
     
     try:
         df_class = load_class_data()
-        st.subheader("Vista previa del Dataset")
-        st.dataframe(df_class.head(100), use_container_width=True) # Mostramos 100 filas para no saturar la memoria
+        st.subheader("Vista Previa del Dataset (parte del Dataset)")
+        st.dataframe(df_class.head(100), use_container_width=True) 
         
         if st.button("Entrenar y Procesar Modelo", key="btn_class"):
             with st.spinner("Entrenando red neuronal..."):
@@ -101,7 +114,8 @@ with tab1:
 # PESTAÑA 2: FITTING (REGRESIÓN)
 # ==========================================
 with tab2:
-    st.header("Predicción de Costos Médicos")
+    st.header("Fitting")
+    st.markdown("<div class='dataset-subtitle'>Dataset: medical_cost_personal_datasets.csv</div>", unsafe_allow_html=True)
     
     st.markdown("""
     <div class="instrucciones">
@@ -120,12 +134,11 @@ with tab2:
     
     try:
         df_reg = load_reg_data()
-        st.subheader("Vista previa del Dataset")
+        st.subheader("Vista Previa del Dataset (parte del Dataset)")
         st.dataframe(df_reg.head(100), use_container_width=True)
         
         if st.button("Entrenar y Procesar Modelo", key="btn_reg"):
             with st.spinner("Entrenando red neuronal de regresión..."):
-                # Preprocesamiento: Convertir variables categóricas a numéricas
                 df_reg_encoded = pd.get_dummies(df_reg, columns=['sex', 'smoker', 'region'], drop_first=True)
                 
                 X = df_reg_encoded.drop('charges', axis=1)
@@ -133,7 +146,6 @@ with tab2:
                 
                 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
                 
-                # Escalar tanto X como y ayuda mucho en regresión con Redes Neuronales
                 scaler_X = StandardScaler()
                 scaler_y = StandardScaler()
                 
@@ -141,11 +153,9 @@ with tab2:
                 X_test_scaled = scaler_X.transform(X_test)
                 y_train_scaled = scaler_y.fit_transform(y_train.values.reshape(-1, 1)).ravel()
                 
-                # Entrenar Regresor
                 mlp_reg = MLPRegressor(hidden_layer_sizes=(100, 50), activation='relu', solver='adam', max_iter=1000, random_state=42)
                 mlp_reg.fit(X_train_scaled, y_train_scaled)
                 
-                # Predecir y desescalar
                 y_pred_scaled = mlp_reg.predict(X_test_scaled)
                 y_pred = scaler_y.inverse_transform(y_pred_scaled.reshape(-1, 1)).ravel()
                 
@@ -177,14 +187,15 @@ with tab2:
 # PESTAÑA 3: SERIES DE TIEMPO
 # ==========================================
 with tab3:
-    st.header("Reconocimiento de Actividad Humana (Sensores Smartphone)")
+    st.header("Series de Tiempo")
+    st.markdown("<div class='dataset-subtitle'>Dataset: human_activity_recognition_with_smartphones.csv</div>", unsafe_allow_html=True)
     
     st.markdown("""
     <div class="instrucciones">
         <b>Instrucciones de uso:</b><br>
         1. Este dataset contiene señales temporales de acelerómetros y giroscopios.<br>
         2. Presiona <b>"Entrenar y Procesar Modelo"</b> para clasificar la serie de tiempo en actividades físicas.<br>
-        3. Dado el gran número de variables (561), el entrenamiento puede tomar entre 10 y 20 segundos.
+        3. Dado el gran número de variables, el entrenamiento tomará un par de minutos.
     </div>
     """, unsafe_allow_html=True)
 
@@ -196,19 +207,16 @@ with tab3:
     
     try:
         df_ts = load_ts_data()
-        st.subheader("Vista previa del Dataset (Sensores)")
-        # Mostramos una muestra para no colapsar la RAM del navegador
+        st.subheader("Vista Previa del Dataset (parte del Dataset)")
         st.dataframe(df_ts.iloc[:, list(range(5)) + list(range(-3, 0))].head(50), use_container_width=True)
         
         if st.button("Entrenar y Procesar Modelo", key="btn_ts"):
             with st.spinner("Entrenando red neuronal para series de tiempo..."):
-                # Preprocesamiento
-                df_ts = df_ts.drop('subject', axis=1, errors='ignore') # Eliminamos ID de sujeto
+                df_ts = df_ts.drop('subject', axis=1, errors='ignore')
                 
                 X = df_ts.drop('Activity', axis=1)
                 y_text = df_ts['Activity']
                 
-                # Codificar la variable objetivo (Activity a números)
                 le = LabelEncoder()
                 y = le.fit_transform(y_text)
                 
@@ -218,7 +226,6 @@ with tab3:
                 X_train_scaled = scaler.fit_transform(X_train)
                 X_test_scaled = scaler.transform(X_test)
                 
-                # Red Neuronal más ligera debido a la gran cantidad de features
                 mlp_ts = MLPClassifier(hidden_layer_sizes=(50,), activation='relu', solver='adam', max_iter=300, random_state=42)
                 mlp_ts.fit(X_train_scaled, y_train)
                 
@@ -231,7 +238,6 @@ with tab3:
                     st.subheader("Métricas de Clasificación")
                     st.info(f"**Accuracy:** {accuracy_score(y_test, y_pred) * 100:.2f}%")
                     st.text("Reporte:")
-                    # Convertimos de nuevo a texto para el reporte
                     st.text(classification_report(le.inverse_transform(y_test), le.inverse_transform(y_pred)))
                 
                 with col2:
